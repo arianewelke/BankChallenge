@@ -1,4 +1,4 @@
-package br.com.compass.dao;
+package br.com.compass.dao.Interfaces;
 
 import br.com.compass.entities.Historico;
 
@@ -7,12 +7,9 @@ import java.util.List;
 public interface HistoricoDao {
     void insert(Historico historico);
     void update(Historico historico);
-    void delete(Historico historico);
-
     void deleteById(Historico historico);
-
     Historico findById(int id);
-    List<Historico> findAll();
-    List<Historico>findByContaId(Integer contaId);
+    List<Historico>findByContaId(int contaId);
+    List<Historico>findByAcao(String acao);
 
 }

@@ -1,53 +1,83 @@
 package br.com.compass.dao.implement;
 
-import br.com.compass.dao.HistoricoDao;
+import br.com.compass.dao.Interfaces.HistoricoDao;
 import br.com.compass.entities.Historico;
-
+import br.com.compass.util.JpaUtil;
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import java.util.List;
 
-public abstract class HistoricoDaoJPA implements HistoricoDao {
+public class HistoricoDaoJPA implements HistoricoDao {
     private EntityManager em;
-    public HistoricoDaoJPA(EntityManager em) {
-        this.em = em;
-    }
-
 
     @Override
     public void insert(Historico historico) {
-        em.getTransaction().begin();
-        em.persist(historico);
-        em.getTransaction().commit();
-
+        EntityManager em = JpaUtil.getEntityManager();
+        try {
+            em.getTransaction().begin();
+            em.persist(historico);
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
     }
 
     @Override
     public void update(Historico historico) {
-        em.getTransaction().begin();
-        em.merge(historico);
-        em.getTransaction().commit();
-
+        EntityManager em = JpaUtil.getEntityManager();
+        try {
+            em.getTransaction().begin();
+            em.merge(historico);
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
     }
 
     @Override
-    public void deleteById(Integer id) {
-        em.getTransaction().begin();
-        em.remove(em.find(Historico.class, historico.getId()));
-        em.getTransaction().commit();
+    public void deleteById(Historico historico) {
+        EntityManager em = JpaUtil.getEntityManager();
+        try {
+            em.getTransaction().begin();
+            em.remove(em.find(Historico.class, historico.getId()));
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
     }
 
     @Override
     public Historico findById(int id) {
-        return null;
+        EntityManager em = JpaUtil.getEntityManager();
+        try {
+            return em.find(Historico.class, id);
+        } finally {
+            em.close();
+        }
     }
 
     @Override
-    public List<Historico> findAll() {
-        return List.of();
+    public List<Historico> findByContaId(int contaId) {
+        EntityManager em = JpaUtil.getEntityManager();
+        try {
+            TypedQuery<Historico> query = em.createQuery("FROM Historico ", Historico.class);
+            query.setParameter("contaId", contaId);
+            return query.getResultList();
+        } finally {
+            em.close();
+        }
     }
 
     @Override
-    public List<Historico> findByContaId(Integer contaId) {
-        return List.of();
+    public List<Historico> findByAcao(String acao) {
+        EntityManager em = JpaUtil.getEntityManager();
+        try {
+            TypedQuery<Historico> query = em.createQuery("FROM Historico ", Historico.class);
+            query.setParameter("acao", acao);
+            return query.getResultList();
+        } finally {
+            em.close();
+        }
     }
 }
+
