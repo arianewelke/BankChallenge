@@ -6,7 +6,7 @@ import br.com.compass.entities.Usuario;
 import javax.persistence.EntityManager;
 import java.util.List;
 
-public class UsuarioDaoJPA implements UsuarioDao {
+public abstract class UsuarioDaoJPA implements UsuarioDao {
 
     private EntityManager em;
 
@@ -39,11 +39,6 @@ public class UsuarioDaoJPA implements UsuarioDao {
 
     @Override
     public Usuario findById(int id) {
-        return em.find(Usuario.class, id);
-    }
-
-    @Override
-    public Usuario findById(Integer id) {
         return em.find(Usuario.class, id);
     }
 
