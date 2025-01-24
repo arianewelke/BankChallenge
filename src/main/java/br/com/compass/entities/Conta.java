@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+
 @Entity
 @Table(name = "conta")
 public class Conta implements Serializable {

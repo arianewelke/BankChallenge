@@ -9,6 +9,11 @@ public interface ContaDao {
     void update(Conta conta);
     void deleteById(Conta conta);
     Conta findById(int id);
+
+    void deleteById(Integer id);
+
+    Conta findById(Integer id);
+
     List<Conta> findAll();
     Conta findByNumero(String numero);
 
