@@ -14,6 +14,7 @@ public class UsuarioServiceImp implements UsuarioService {
         this.dao = dao;
     }
 
+
     @Override
     public Usuario create(String nome, String telefone, String cpf, LocalDate dataNascimento, String senha) {
         if(nome.isEmpty() || telefone.isEmpty() || cpf.isEmpty() || dataNascimento == null || senha == null) {
@@ -25,4 +26,33 @@ public class UsuarioServiceImp implements UsuarioService {
 
         return usuario;
     }
+
+    @Override
+    public Usuario findByCpf(String cpf) {
+        if (cpf == null || cpf.trim().isEmpty()) {
+            throw new IllegalArgumentException("CPF não pode ser vazio.");
+        }
+
+        Usuario usuario = dao.findByCpf(cpf);
+        if (usuario == null) {
+            throw new IllegalArgumentException("Usuário com o CPF informado não encontrado.");
+        }
+
+        return usuario;
+    }
+
+    @Override
+    public Usuario findByCpfAndPassword(String cpf, String senha) {
+        if (cpf.isEmpty() || senha.isEmpty()) {
+            throw new IllegalArgumentException("CPF e senha não podem estar vazios.");
+        }
+
+        Usuario usuario = dao.findByCpfAndPassword(cpf, senha);
+        if (usuario == null) {
+            throw new IllegalArgumentException("Usuário não encontrado ou senha inválida.");
+        }
+
+        return usuario;
+    }
+
 }

@@ -6,6 +6,7 @@ import br.com.compass.entities.Historico;
 import br.com.compass.services.interfaces.HistoricoService;
 
 import java.time.LocalDateTime;
+import java.util.IllegalFormatCodePointException;
 import java.util.List;
 
 public class HistoricoServiceImp implements HistoricoService {
@@ -31,7 +32,15 @@ public class HistoricoServiceImp implements HistoricoService {
 
     @Override
     public List<Historico> consultarPorConta(int contaId) {
-        return List.of();
+        if (contaId == 0) {
+            throw new IllegalArgumentException("Conta é obrigatório.");
+        }
+        List<Historico> historico = dao.findByContaId(contaId);
+        if (historico == null || historico.isEmpty()) {
+            throw new IllegalArgumentException("Nenhum histórico encontrado para a conta informada.");
+        }
+
+        return historico;
     }
 
     @Override

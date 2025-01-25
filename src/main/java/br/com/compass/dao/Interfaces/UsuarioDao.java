@@ -10,5 +10,10 @@ public interface UsuarioDao {
         void deleteById(int id);
         Usuario findById(int id);
         List<Usuario> findAll();
+
         Usuario findByCpf(String cpf);
+
+        Boolean existsAccountByUsuarioIdAndTipo(int usuarioId, String tipo);
+        Usuario findByCpfAndPassword(String cpf, String senha);
+
 }

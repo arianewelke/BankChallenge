@@ -82,12 +82,13 @@ public class ContaDaoJPA implements ContaDao {
     public Boolean existsAccountByUsuarioIdAndTipo(int usuarioId, String tipo) {
         EntityManager em = JpaUtil.getEntityManager();
         try {
-            Conta c = em.createQuery("FROM Conta c WHERE c.usuario.id = :usuarioId AND c.tipo == :tipo", Conta.class)
-                        .setParameter("usuarioId", usuarioId)
-                        .setParameter("tipo", tipo)
-                        .getSingleResult();
+            List<Conta> contas = em.createQuery(
+                            "FROM Conta c WHERE c.usuario.id = :usuarioId AND c.tipo = :tipo", Conta.class)
+                    .setParameter("usuarioId", usuarioId)
+                    .setParameter("tipo", tipo)
+                    .getResultList();
 
-            return c != null;
+            return !contas.isEmpty();
         } finally {
             em.close();
         }

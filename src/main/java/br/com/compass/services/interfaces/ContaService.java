@@ -1,6 +1,5 @@
 package br.com.compass.services.interfaces;
 
-import br.com.compass.entities.Conta;
 import br.com.compass.entities.Usuario;
 
 public interface ContaService {
