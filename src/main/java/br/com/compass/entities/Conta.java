@@ -16,6 +16,7 @@ public class Conta implements Serializable {
     private Float saldo;
     private String tipo;
     private String numero;
+    private int deposit;
 
     @OneToOne
     @JoinColumn(name = "usuarioId", unique = true, nullable = false)  // Relacionamento um-para-um
@@ -58,8 +59,12 @@ public class Conta implements Serializable {
         return saldo;
     }
 
-    public void setSaldo(Float saldo) {
-        this.saldo = saldo;
+    public void deposit(Float amount) {
+        this.saldo += amount;
+    }
+
+    public void withdraw(Float amount) {
+        this.saldo -= amount;
     }
 
     public String getTipo() {

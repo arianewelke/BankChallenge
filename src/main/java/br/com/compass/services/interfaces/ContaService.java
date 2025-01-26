@@ -1,9 +1,13 @@
 package br.com.compass.services.interfaces;
 
+import br.com.compass.entities.Conta;
 import br.com.compass.entities.Usuario;
 
 public interface ContaService {
     String create(float saldo, String tipo, Usuario usuario);
 
-    String findByUsuarioIdAndNumero(int usuarioId, String numero);
+    Conta findByUsuarioIdAndNumero(int usuarioId, String numero);
+
+    Float amountDeposit(Conta conta, float amount);
+
 }

@@ -37,7 +37,7 @@ public class ContaServiceImp implements ContaService {
     }
 
     @Override
-    public String findByUsuarioIdAndNumero(int usuarioId, String numero) {
+    public Conta findByUsuarioIdAndNumero(int usuarioId, String numero) {
         if(usuarioId == 0 || numero.isEmpty()) {
             throw new IllegalArgumentException("Invalid account");
         }
@@ -45,6 +45,22 @@ public class ContaServiceImp implements ContaService {
         if (conta == null) {
             throw new IllegalArgumentException("Conta not found");
         }
-        return conta.getNumero();
+        return conta;
+    }
+
+    @Override
+    public Float amountDeposit(Conta conta, float amount) {
+        if( amount < 0) {
+            throw new IllegalArgumentException("Invalid account");
+        }
+
+        if (conta == null) {
+            throw new IllegalArgumentException("Conta not found");
+        }
+
+        conta.deposit(amount);
+        dao.update(conta);
+
+        return conta.getSaldo();
     }
 }

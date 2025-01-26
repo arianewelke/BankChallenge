@@ -55,11 +55,11 @@ public class App {
                         if (usuario != null) {
                             // Busca a conta do usuário pelo número informado
                             String contaNumero = (cpfLogin + "-" + tipo);
-                            String conta = contaService.findByUsuarioIdAndNumero(usuario.getId(), contaNumero);
+                            Conta conta = contaService.findByUsuarioIdAndNumero(usuario.getId(), contaNumero);
                             if (conta != null) {
                                 // Login bem-sucedido, redireciona para o menu bancário
                                 System.out.println("Login successful! Welcome, " + usuario.getNome() + ".");
-                                bankMenu(scanner, usuario, contaService); // Passa o usuário autenticado para o menu
+                                bankMenu(scanner, usuarioService, contaService, conta); // Passa o usuário autenticado para o menu
                                 return;
                             } else {
                                 System.out.println("Account not found. Please check the account number.");
@@ -71,7 +71,7 @@ public class App {
                         // Trata o caso em que a consulta ao banco não retorna resultados
                         System.out.println("No user or account found for the provided credentials.");
                     } catch (Exception e) {
-                        // Trata quaisquer outros erros inesperados
+                        // Trata outros erros inesperados
                         System.out.println("An error occurred during login: " + e.getMessage());
                     }
                     break;
@@ -165,8 +165,12 @@ public class App {
         }
     }
 
-    public static void bankMenu(Scanner scanner, Usuario usuario, ContaService contaService) {
+    public static void bankMenu(Scanner scanner, UsuarioService usuarioService, ContaService contaService, Conta conta) {
         boolean running = true;
+
+//        mainMenu(scanner, usuarioService, contaService);
+//        scanner.close();
+//        System.out.println("Application closed");
 
         while (running) {
 
@@ -184,10 +188,21 @@ public class App {
 
             switch (option) {
                 case 1:
-                    System.out.print("Enter amount to deposit: ");
+                    try {
+                        System.out.println("Enter the amount to deposit: ");
+                        float amount = scanner.nextFloat();
+                        //busca a conta pelo usuario
+                        Float saldo = contaService.amountDeposit(conta, amount);
+                        System.out.println("Deposit successful! New account balance: " + saldo);
+
+                    } catch (IllegalArgumentException e) {
+                            System.out.println("Error: " + e.getMessage());
+                    } catch (Exception e) {
+                             System.out.println("An unexpected error occurred: " + e.getMessage());
+                    }
                     break;
                 case 2:
-                    // ToDo...
+                    
                     System.out.println("Withdraw.");
                     break;
                 case 3:
