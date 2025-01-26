@@ -17,22 +17,34 @@ public class ContaServiceImp implements ContaService {
     @Override
     public String create(float saldo, String tipo, Usuario usuario) {
         if(saldo < 0 || tipo.isEmpty() || usuario == null) {
-            throw new IllegalArgumentException("Os campos devem ser preenchidos");
+            throw new IllegalArgumentException("Fields must be filled in");
         }
 
-        List<String> tipos = Arrays.asList("corrente","poupanca","salario");
+        List<String> tipos = Arrays.asList("current", "savings", "salary");
         if(tipos.contains(tipo) == false) {
-            throw new IllegalArgumentException("Tipo de conta inválido");
+            throw new IllegalArgumentException("Invalid account type");
         }
 
         Boolean existsAccount = dao.existsAccountByUsuarioIdAndTipo(usuario.getId(), tipo);
         if(existsAccount == true) {
-            throw new IllegalArgumentException("Usuario já possui uma conta com o tipo " + tipo);
+            throw new IllegalArgumentException("User already has an account with the type " + tipo);
         }
 
         Conta conta = new Conta(usuario.getCpf()+"-"+tipo, saldo, tipo, usuario);
         dao.insert(conta);
 
+        return conta.getNumero();
+    }
+
+    @Override
+    public String findByUsuarioIdAndNumero(int usuarioId, String numero) {
+        if(usuarioId == 0 || numero.isEmpty()) {
+            throw new IllegalArgumentException("Invalid account");
+        }
+        Conta conta = dao.findByUsuarioIdAndNumero(usuarioId, numero);
+        if (conta == null) {
+            throw new IllegalArgumentException("Conta not found");
+        }
         return conta.getNumero();
     }
 }

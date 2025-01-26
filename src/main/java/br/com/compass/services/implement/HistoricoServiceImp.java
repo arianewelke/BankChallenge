@@ -21,11 +21,11 @@ public class HistoricoServiceImp implements HistoricoService {
     @Override
     public void registrar(int contaId, String acao, LocalDateTime dataCriacao, Float saldo) {
         if (contaId == 0 || acao == null || acao.trim().isEmpty()) {
-            throw new IllegalArgumentException("Conta ID e ação são obrigatórios.");
+            throw new IllegalArgumentException("Account ID and action are required.");
         }
 
         if (saldo < 0) {
-            throw new IllegalArgumentException("O saldo não pode ser negativo.");
+            throw new IllegalArgumentException("The balance cannot be negative.");
 
         }
     }
@@ -33,11 +33,11 @@ public class HistoricoServiceImp implements HistoricoService {
     @Override
     public List<Historico> consultarPorConta(int contaId) {
         if (contaId == 0) {
-            throw new IllegalArgumentException("Conta é obrigatório.");
+            throw new IllegalArgumentException("Account is required.");
         }
         List<Historico> historico = dao.findByContaId(contaId);
         if (historico == null || historico.isEmpty()) {
-            throw new IllegalArgumentException("Nenhum histórico encontrado para a conta informada.");
+            throw new IllegalArgumentException("No history found for the given account.");
         }
 
         return historico;

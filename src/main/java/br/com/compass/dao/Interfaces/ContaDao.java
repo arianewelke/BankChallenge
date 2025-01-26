@@ -12,4 +12,5 @@ public interface ContaDao {
     List<Conta> findAll();
     Conta findByNumero(String numero);
     Boolean existsAccountByUsuarioIdAndTipo(int usuarioId, String tipo);
+    Conta findByUsuarioIdAndNumero(int usuarioId, String numero);
 }

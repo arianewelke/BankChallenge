@@ -4,6 +4,7 @@ import br.com.compass.dao.Interfaces.ContaDao;
 import br.com.compass.entities.Conta;
 import br.com.compass.util.JpaUtil;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import java.util.List;
 
@@ -87,8 +88,23 @@ public class ContaDaoJPA implements ContaDao {
                     .setParameter("usuarioId", usuarioId)
                     .setParameter("tipo", tipo)
                     .getResultList();
-
             return !contas.isEmpty();
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
+    public Conta findByUsuarioIdAndNumero(int usuarioId, String numero) {
+        EntityManager em = JpaUtil.getEntityManager();
+        try {
+            return em.createQuery(
+                            "FROM Conta c WHERE c.usuario.id = :usuarioId AND c.numero = :numero", Conta.class)
+                    .setParameter("usuarioId", usuarioId)
+                    .setParameter("numero", numero)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            return null;
         } finally {
             em.close();
         }

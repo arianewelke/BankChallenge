@@ -4,4 +4,6 @@ import br.com.compass.entities.Usuario;
 
 public interface ContaService {
     String create(float saldo, String tipo, Usuario usuario);
+
+    String findByUsuarioIdAndNumero(int usuarioId, String numero);
 }

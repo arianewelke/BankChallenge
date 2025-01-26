@@ -14,13 +14,14 @@ public class UsuarioDaoJPA implements UsuarioDao {
     @Override
     public void insert(Usuario usuario) {
         EntityManager em = JpaUtil.getEntityManager();
-
         try {
             em.getTransaction().begin();
             em.persist(usuario);
             em.getTransaction().commit();
         } catch (Exception e) {
             System.out.println("Erro ao inserir: " + e.getMessage());
+        } finally {
+            em.close();
         }
     }
 
@@ -33,7 +34,9 @@ public class UsuarioDaoJPA implements UsuarioDao {
             em.getTransaction().commit();
         } catch (Exception e) {
             em.getTransaction().rollback();
-            throw new RuntimeException("Erro ao atualizar usuário", e);
+            System.out.println("Erro ao atualizar usuário" + e);
+        } finally {
+            em.close();
         }
     }
 
@@ -46,7 +49,9 @@ public class UsuarioDaoJPA implements UsuarioDao {
             em.getTransaction().commit();
         } catch (Exception e) {
             em.getTransaction().rollback();
-            throw new RuntimeException("Erro ao deletar usuário", e);
+            System.out.println("Erro ao deletar usuário" + e);
+        } finally {
+            em.close();
         }
     }
 
@@ -57,6 +62,8 @@ public class UsuarioDaoJPA implements UsuarioDao {
             return em.find(Usuario.class, id);
         } catch (Exception e) {
             System.out.println("Erro ao buscar usuario: " + e.getMessage());
+        } finally {
+            em.close();
         }
         return null;
     }
@@ -69,6 +76,8 @@ public class UsuarioDaoJPA implements UsuarioDao {
             return query.getResultList();
         } catch (Exception e) {
             em.getTransaction().rollback();
+        } finally {
+            em.close();
         }
         return List.of();
     }
@@ -76,10 +85,16 @@ public class UsuarioDaoJPA implements UsuarioDao {
     @Override
     public Usuario findByCpf(String cpf) {
         EntityManager em = JpaUtil.getEntityManager();
-        em.createQuery("FROM Usuario u WHERE u.cpf = :cpf", Usuario.class)
-                .setParameter("cpf", cpf)
-                .getSingleResult();
-        return null;
+        try {
+            return em.createQuery("FROM Usuario u WHERE u.cpf = :cpf", Usuario.class)
+                    .setParameter("cpf", cpf)
+                    .getSingleResult();
+        } catch (Exception e) {
+            System.out.println("Erro ao buscar usuario: " + e.getMessage());
+            return null;
+        } finally {
+            em.close();
+        }
     }
 
     @Override

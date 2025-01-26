@@ -18,7 +18,7 @@ public class UsuarioServiceImp implements UsuarioService {
     @Override
     public Usuario create(String nome, String telefone, String cpf, LocalDate dataNascimento, String senha) {
         if(nome.isEmpty() || telefone.isEmpty() || cpf.isEmpty() || dataNascimento == null || senha == null) {
-            throw new IllegalArgumentException("Os campos devem ser preenchidos");
+            throw new IllegalArgumentException("Fields must be filled in");
         }
 
         Usuario usuario = new Usuario(nome, telefone, cpf, dataNascimento, senha);
@@ -30,12 +30,12 @@ public class UsuarioServiceImp implements UsuarioService {
     @Override
     public Usuario findByCpf(String cpf) {
         if (cpf == null || cpf.trim().isEmpty()) {
-            throw new IllegalArgumentException("CPF não pode ser vazio.");
+            throw new IllegalArgumentException("CPF cannot be empty.");
         }
 
         Usuario usuario = dao.findByCpf(cpf);
         if (usuario == null) {
-            throw new IllegalArgumentException("Usuário com o CPF informado não encontrado.");
+            throw new IllegalArgumentException("User with the provided CPF not found.");
         }
 
         return usuario;
@@ -44,12 +44,12 @@ public class UsuarioServiceImp implements UsuarioService {
     @Override
     public Usuario findByCpfAndPassword(String cpf, String senha) {
         if (cpf.isEmpty() || senha.isEmpty()) {
-            throw new IllegalArgumentException("CPF e senha não podem estar vazios.");
+            throw new IllegalArgumentException("CPF and password cannot be empty.");
         }
 
         Usuario usuario = dao.findByCpfAndPassword(cpf, senha);
         if (usuario == null) {
-            throw new IllegalArgumentException("Usuário não encontrado ou senha inválida.");
+            throw new IllegalArgumentException("Username not found or invalid password.");
         }
 
         return usuario;
