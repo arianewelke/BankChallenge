@@ -74,6 +74,8 @@ public class ContaDaoJPA implements ContaDao {
             return em.createQuery("FROM Conta c WHERE c.numero = :numero", Conta.class)
                     .setParameter("numero", numero)
                     .getSingleResult();
+        } catch (NoResultException e) {
+            return null;
         } finally {
             em.close();
         }
@@ -110,5 +112,6 @@ public class ContaDaoJPA implements ContaDao {
         }
     }
 }
+
 
 

@@ -72,7 +72,7 @@ public class App {
                         System.out.println("No user or account found for the provided credentials.");
                     } catch (Exception e) {
                         // Trata outros erros inesperados
-                        System.out.println("An error occurred during login: " + e.getMessage());
+                        System.out.println("An error occurred: " + e.getMessage());
                     }
                     break;
 
@@ -168,10 +168,6 @@ public class App {
     public static void bankMenu(Scanner scanner, UsuarioService usuarioService, ContaService contaService, Conta conta) {
         boolean running = true;
 
-//        mainMenu(scanner, usuarioService, contaService);
-//        scanner.close();
-//        System.out.println("Application closed");
-
         while (running) {
 
             System.out.println("========= Bank Menu =========");
@@ -216,12 +212,27 @@ public class App {
                     break;
 
                 case 3:
-                    System.out.print("Check Balance: " + conta.getSaldo());
+                    System.out.println("Check Balance: " + conta.getSaldo());
                     break;
 
                 case 4:
-                    
-                    System.out.println("Transfer successful! New account balance: " + conta.getSaldo());
+                    try{
+                        System.out.print("Enter the number account to be transferred: ");
+                        String contaNumeroDestino = scanner.next();
+                        System.out.print("Enter the amount to be transferred: ");
+                        float amount = scanner.nextFloat();
+
+                        Conta result = contaService.transfer(conta, contaNumeroDestino, amount);
+                        if(result == null){
+                            break;
+                        }
+
+                        System.out.println("Transfer successful! New account balance: " + conta.getSaldo());
+                    } catch (IllegalArgumentException e) {
+                        System.out.println("Error: " + e.getMessage());
+                    } catch (Exception e) {
+                        System.out.println("An unexpected error occurred: " + e.getMessage());
+                    }
                     break;
 
                 case 5:

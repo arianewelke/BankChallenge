@@ -61,7 +61,7 @@ public class ContaServiceImp implements ContaService {
     @Override
     public Float amountDeposit(Conta conta, float amount) {
         if( amount < 0) {
-            throw new IllegalArgumentException("Invalid account");
+            throw new IllegalArgumentException("Invalid value. Enter a positive value");
         }
 
         if (conta == null) {
@@ -77,7 +77,7 @@ public class ContaServiceImp implements ContaService {
     @Override
     public Float amountWithdraw(Conta conta, float amount) {
         if (amount < 0) {
-            throw new IllegalArgumentException("Invalid account");
+            throw new IllegalArgumentException("Invalid value. Enter a positive value");
         }
         if (conta == null) {
             throw new IllegalArgumentException("Conta not found");
@@ -89,5 +89,33 @@ public class ContaServiceImp implements ContaService {
         dao.update(conta);
 
         return conta.getSaldo();
+    }
+
+    @Override
+    public Conta transfer(Conta contaOrigem, String numeroContaDestino, float amount) {
+        if(contaOrigem.getSaldo() < amount) {
+            System.out.println("insufficient balance.");
+        }
+
+        if (amount <= 0) {
+            System.out.println("Invalid value. Enter a positive value");
+        }
+
+        if(numeroContaDestino.isEmpty() || contaOrigem.getNumero().equals(numeroContaDestino)) {
+            System.out.println("Invalid account");
+        }
+
+        Conta contaDestino = dao.findByNumero(numeroContaDestino);
+        if(contaDestino == null) {
+            System.out.println("Receiver account not found");
+        }
+
+        contaOrigem.withdraw(amount);
+        contaDestino.deposit(amount);
+
+        dao.update(contaOrigem);
+        dao.update(contaDestino);
+
+        return contaOrigem;
     }
 }
