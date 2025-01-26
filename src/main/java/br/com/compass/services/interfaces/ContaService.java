@@ -8,6 +8,9 @@ public interface ContaService {
 
     Conta findByUsuarioIdAndNumero(int usuarioId, String numero);
 
+    Conta findByNumero(String numero);
+
     Float amountDeposit(Conta conta, float amount);
+    Float amountWithdraw(Conta conta, float amount);
 
 }

@@ -189,7 +189,7 @@ public class App {
             switch (option) {
                 case 1:
                     try {
-                        System.out.println("Enter the amount to deposit: ");
+                        System.out.print("Enter the amount to deposit: ");
                         float amount = scanner.nextFloat();
                         //busca a conta pelo usuario
                         Float saldo = contaService.amountDeposit(conta, amount);
@@ -201,22 +201,34 @@ public class App {
                              System.out.println("An unexpected error occurred: " + e.getMessage());
                     }
                     break;
+
                 case 2:
-                    
-                    System.out.println("Withdraw.");
+                    try{
+                        System.out.print("Enter the amount to withdraw: ");
+                        float amount = scanner.nextFloat();
+                        Float saldo = contaService.amountWithdraw(conta, amount);
+                        System.out.println("Withdraw successful! New account balance: " + saldo);
+                    } catch (IllegalArgumentException e) {
+                        System.out.println("Error: " + e.getMessage());
+                    } catch (Exception e) {
+                        System.out.println("An unexpected error occurred: " + e.getMessage());
+                    }
                     break;
+
                 case 3:
-                    // ToDo...
-                    System.out.println("Check Balance.");
+                    System.out.print("Check Balance: " + conta.getSaldo());
                     break;
+
                 case 4:
-                    // ToDo...
-                    System.out.println("Transfer.");
+                    
+                    System.out.println("Transfer successful! New account balance: " + conta.getSaldo());
                     break;
+
                 case 5:
                     // ToDo...
                     System.out.println("Bank Statement.");
                     break;
+
                 case 0:
                     // ToDo...
                     System.out.println("Exiting...");

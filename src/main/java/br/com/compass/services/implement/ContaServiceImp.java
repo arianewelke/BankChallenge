@@ -4,6 +4,7 @@ import br.com.compass.dao.implement.ContaDaoJPA;
 import br.com.compass.entities.Conta;
 import br.com.compass.entities.Usuario;
 import br.com.compass.services.interfaces.ContaService;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -49,6 +50,15 @@ public class ContaServiceImp implements ContaService {
     }
 
     @Override
+    public Conta findByNumero(String numero) {
+        Conta conta = dao.findByNumero(numero);
+        if (conta == null) {
+            throw new IllegalArgumentException("Conta not found");
+        }
+        return conta;
+    }
+
+    @Override
     public Float amountDeposit(Conta conta, float amount) {
         if( amount < 0) {
             throw new IllegalArgumentException("Invalid account");
@@ -59,6 +69,23 @@ public class ContaServiceImp implements ContaService {
         }
 
         conta.deposit(amount);
+        dao.update(conta);
+
+        return conta.getSaldo();
+    }
+
+    @Override
+    public Float amountWithdraw(Conta conta, float amount) {
+        if (amount < 0) {
+            throw new IllegalArgumentException("Invalid account");
+        }
+        if (conta == null) {
+            throw new IllegalArgumentException("Conta not found");
+        }
+        if (amount > conta.getSaldo()) {
+            throw new IllegalArgumentException("insufficient balance.");
+        }
+        conta.withdraw(amount);
         dao.update(conta);
 
         return conta.getSaldo();

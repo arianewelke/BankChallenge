@@ -95,4 +95,6 @@ public class Conta implements Serializable {
     public int hashCode() {
         return id;
     }
+
+
 }
