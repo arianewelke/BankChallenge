@@ -10,6 +10,4 @@ public interface HistoricoService {
     void registrar(Conta conta, String acao);
 
     List<Historico> consultarPorConta(int contaId);
-//    List<Historico> consultarPorConta(int contaId);
-//    List<Historico> consultarPorAcao(String acao, int contaId);
 }

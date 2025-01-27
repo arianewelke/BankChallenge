@@ -14,6 +14,7 @@ public class Historico implements Serializable {
     private String acao;
     private LocalDateTime dataCriacao;
     private Float saldo;
+    private String usuarioId;
 
     @ManyToOne //Muitos historicos para uma conta
     @JoinColumn(name = "contaId", nullable = false)  // Chave estrangeira para Conta

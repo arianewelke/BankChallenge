@@ -9,6 +9,5 @@ public interface HistoricoDao {
     void update(Historico historico);
     void deleteById(Historico historico);
     Historico findById(int id);
-    //List<Historico>findByAcao(String acao);
     List<Historico> consultarPorConta(int contaId);
 }

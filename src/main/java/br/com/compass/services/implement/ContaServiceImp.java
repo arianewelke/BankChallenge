@@ -49,7 +49,7 @@ public class ContaServiceImp implements ContaService {
         }
         Conta conta = dao.findByUsuarioIdAndNumero(usuarioId, numero);
         if (conta == null) {
-            throw new IllegalArgumentException("Conta not found");
+            throw new IllegalArgumentException("Account not found");
         }
         return conta;
     }
@@ -58,7 +58,7 @@ public class ContaServiceImp implements ContaService {
     public Conta findByNumero(String numero) {
         Conta conta = dao.findByNumero(numero);
         if (conta == null) {
-            throw new IllegalArgumentException("Conta not found");
+            throw new IllegalArgumentException("Account not found");
         }
         return conta;
     }
@@ -70,7 +70,7 @@ public class ContaServiceImp implements ContaService {
         }
 
         if (conta == null) {
-            throw new IllegalArgumentException("Conta not found");
+            throw new IllegalArgumentException("Account not found");
         }
 
         conta.deposit(amount);
@@ -87,7 +87,7 @@ public class ContaServiceImp implements ContaService {
             throw new IllegalArgumentException("Invalid value. Enter a positive value");
         }
         if (conta == null) {
-            throw new IllegalArgumentException("Conta not found");
+            throw new IllegalArgumentException("Account not found");
         }
         if (amount > conta.getSaldo()) {
             throw new IllegalArgumentException("insufficient balance.");
@@ -126,7 +126,9 @@ public class ContaServiceImp implements ContaService {
         dao.update(contaDestino);
 
         historicoService.registrar(contaOrigem, "transfer - out");
+        System.out.println(contaOrigem.getNumero());
         historicoService.registrar(contaDestino, "transfer - in");
+        System.out.println(contaDestino.getNumero());
 
         return contaOrigem;
     }

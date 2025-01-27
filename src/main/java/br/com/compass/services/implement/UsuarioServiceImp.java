@@ -44,7 +44,7 @@ public class UsuarioServiceImp implements UsuarioService {
     @Override
     public Usuario findByCpfAndPassword(String cpf, String senha) {
         if (cpf.isEmpty() || senha.isEmpty()) {
-            throw new IllegalArgumentException("CPF and password cannot be empty.");
+            throw new IllegalArgumentException("CPF or password cannot be empty.");
         }
 
         Usuario usuario = dao.findByCpfAndPassword(cpf, senha);

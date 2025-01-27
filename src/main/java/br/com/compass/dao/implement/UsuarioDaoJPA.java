@@ -19,7 +19,7 @@ public class UsuarioDaoJPA implements UsuarioDao {
             em.persist(usuario);
             em.getTransaction().commit();
         } catch (Exception e) {
-            System.out.println("Erro ao inserir: " + e.getMessage());
+            System.out.println("Error inserting: " + e.getMessage());
         } finally {
             em.close();
         }
@@ -34,7 +34,7 @@ public class UsuarioDaoJPA implements UsuarioDao {
             em.getTransaction().commit();
         } catch (Exception e) {
             em.getTransaction().rollback();
-            System.out.println("Erro ao atualizar usuário" + e);
+            System.out.println("Error updating user" + e);
         } finally {
             em.close();
         }
@@ -49,7 +49,7 @@ public class UsuarioDaoJPA implements UsuarioDao {
             em.getTransaction().commit();
         } catch (Exception e) {
             em.getTransaction().rollback();
-            System.out.println("Erro ao deletar usuário" + e);
+            System.out.println("Error deleting user" + e);
         } finally {
             em.close();
         }
@@ -61,7 +61,7 @@ public class UsuarioDaoJPA implements UsuarioDao {
         try {
             return em.find(Usuario.class, id);
         } catch (Exception e) {
-            System.out.println("Erro ao buscar usuario: " + e.getMessage());
+            System.out.println("Error searching for user: " + e.getMessage());
         } finally {
             em.close();
         }
@@ -90,7 +90,7 @@ public class UsuarioDaoJPA implements UsuarioDao {
                     .setParameter("cpf", cpf)
                     .getSingleResult();
         } catch (Exception e) {
-            System.out.println("Erro ao buscar usuario: " + e.getMessage());
+            System.out.println("Error searching for user: " + e.getMessage());
             return null;
         } finally {
             em.close();
