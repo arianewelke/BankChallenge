@@ -1,16 +1,22 @@
 package br.com.compass;
 
 import br.com.compass.dao.implement.ContaDaoJPA;
+import br.com.compass.dao.implement.HistoricoDaoJPA;
 import br.com.compass.dao.implement.UsuarioDaoJPA;
+import br.com.compass.entities.Historico;
 import br.com.compass.entities.Usuario;
 import br.com.compass.entities.Conta;
 import br.com.compass.services.implement.ContaServiceImp;
+import br.com.compass.services.implement.HistoricoServiceImp;
 import br.com.compass.services.implement.UsuarioServiceImp;
 import br.com.compass.services.interfaces.ContaService;
+import br.com.compass.services.interfaces.HistoricoService;
 import br.com.compass.services.interfaces.UsuarioService;
 
 import javax.persistence.NoResultException;
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 
 public class App {
@@ -19,14 +25,14 @@ public class App {
 
         Scanner scanner = new Scanner(System.in);
         UsuarioService usuarioService = new UsuarioServiceImp(new UsuarioDaoJPA());
-        ContaService contaService = new ContaServiceImp(new ContaDaoJPA());
-
-        mainMenu(scanner, usuarioService, contaService);
+        ContaService contaService = new ContaServiceImp(new ContaDaoJPA(), new HistoricoServiceImp(new HistoricoDaoJPA()));
+        HistoricoService historicoService = new HistoricoServiceImp(new HistoricoDaoJPA());
+        mainMenu(scanner, usuarioService, contaService, historicoService);
         scanner.close();
         System.out.println("Application closed");
     }
 
-    public static void mainMenu(Scanner scanner, UsuarioService usuarioService, ContaService contaService) {
+    public static void mainMenu(Scanner scanner, UsuarioService usuarioService, ContaService contaService, HistoricoService historicoService) {
         boolean running = true;
 
         while (running) {
@@ -59,7 +65,7 @@ public class App {
                             if (conta != null) {
                                 // Login bem-sucedido, redireciona para o menu bancário
                                 System.out.println("Login successful! Welcome, " + usuario.getNome() + ".");
-                                bankMenu(scanner, usuarioService, contaService, conta); // Passa o usuário autenticado para o menu
+                                bankMenu(scanner, usuarioService, contaService, conta, historicoService); // Passa o usuário autenticado para o menu
                                 return;
                             } else {
                                 System.out.println("Account not found. Please check the account number.");
@@ -107,7 +113,7 @@ public class App {
                                     String contaNumero = contaService.create(0.0f, tipoConta, usuario);
                                     System.out.println("Account created successfully! Account number: " + contaNumero);
 
-                                    mainMenu(scanner, usuarioService, contaService);
+                                    mainMenu(scanner, usuarioService, contaService, historicoService);
                                     isCreatingAccount = false; // Finaliza o loop
 
                                 } else {
@@ -165,7 +171,7 @@ public class App {
         }
     }
 
-    public static void bankMenu(Scanner scanner, UsuarioService usuarioService, ContaService contaService, Conta conta) {
+    public static void bankMenu(Scanner scanner, UsuarioService usuarioService, ContaService contaService, Conta conta, HistoricoService historicoService) {
         boolean running = true;
 
         while (running) {
@@ -236,8 +242,16 @@ public class App {
                     break;
 
                 case 5:
-                    // ToDo...
-                    System.out.println("Bank Statement.");
+                    System.out.print("============================ Bank Statement ====================");
+                    System.out.println();
+                    List<Historico> extratos = historicoService.consultarPorConta(conta.getId());
+
+                    for(Historico historico : extratos) {
+                        System.out.println("================");
+                        System.out.println("Operation: " + historico.getAcao());
+                        System.out.println("Balance: " + historico.getSaldo());
+                        System.out.println("Date: " + historico.getDataCriacao());
+                    }
                     break;
 
                 case 0:

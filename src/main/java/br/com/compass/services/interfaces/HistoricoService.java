@@ -7,7 +7,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface HistoricoService {
-    void registrar(int contaId, String acao, LocalDateTime dataCriacao, Float saldo);
+    void registrar(Conta conta, String acao);
+
     List<Historico> consultarPorConta(int contaId);
-    List<Historico> consultarPorAcao(String acao, int contaId);
+//    List<Historico> consultarPorConta(int contaId);
+//    List<Historico> consultarPorAcao(String acao, int contaId);
 }

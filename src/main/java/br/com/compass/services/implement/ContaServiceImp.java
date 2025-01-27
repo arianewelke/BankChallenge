@@ -1,18 +1,23 @@
 package br.com.compass.services.implement;
 
+import br.com.compass.dao.Interfaces.HistoricoDao;
 import br.com.compass.dao.implement.ContaDaoJPA;
 import br.com.compass.entities.Conta;
 import br.com.compass.entities.Usuario;
 import br.com.compass.services.interfaces.ContaService;
+import br.com.compass.services.interfaces.HistoricoService;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class ContaServiceImp implements ContaService {
     private ContaDaoJPA dao;
+    private HistoricoService historicoService;
 
-    public ContaServiceImp(ContaDaoJPA dao) {
+    public ContaServiceImp(ContaDaoJPA dao, HistoricoServiceImp historicoService)
+    {
         this.dao = dao;
+        this.historicoService = historicoService;
     }
 
     @Override
@@ -71,6 +76,8 @@ public class ContaServiceImp implements ContaService {
         conta.deposit(amount);
         dao.update(conta);
 
+        historicoService.registrar(conta, "deposit");
+
         return conta.getSaldo();
     }
 
@@ -87,6 +94,8 @@ public class ContaServiceImp implements ContaService {
         }
         conta.withdraw(amount);
         dao.update(conta);
+
+        historicoService.registrar(conta, "withdraw");
 
         return conta.getSaldo();
     }
@@ -115,6 +124,9 @@ public class ContaServiceImp implements ContaService {
 
         dao.update(contaOrigem);
         dao.update(contaDestino);
+
+        historicoService.registrar(contaOrigem, "transfer - out");
+        historicoService.registrar(contaDestino, "transfer - in");
 
         return contaOrigem;
     }

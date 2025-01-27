@@ -16,7 +16,6 @@ public class Conta implements Serializable {
     private Float saldo;
     private String tipo;
     private String numero;
-    private int deposit;
 
     @OneToOne
     @JoinColumn(name = "usuarioId", unique = true, nullable = false)  // Relacionamento um-para-um

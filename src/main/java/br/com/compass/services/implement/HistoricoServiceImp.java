@@ -2,11 +2,11 @@ package br.com.compass.services.implement;
 
 import br.com.compass.dao.Interfaces.HistoricoDao;
 import br.com.compass.dao.implement.HistoricoDaoJPA;
+import br.com.compass.entities.Conta;
 import br.com.compass.entities.Historico;
 import br.com.compass.services.interfaces.HistoricoService;
 
 import java.time.LocalDateTime;
-import java.util.IllegalFormatCodePointException;
 import java.util.List;
 
 public class HistoricoServiceImp implements HistoricoService {
@@ -19,32 +19,22 @@ public class HistoricoServiceImp implements HistoricoService {
 
 
     @Override
-    public void registrar(int contaId, String acao, LocalDateTime dataCriacao, Float saldo) {
-        if (contaId == 0 || acao == null || acao.trim().isEmpty()) {
-            throw new IllegalArgumentException("Account ID and action are required.");
-        }
+    public void registrar(Conta conta, String acao) {
+        Historico historico = new Historico(conta, acao, LocalDateTime.now(), conta.getSaldo());
 
-        if (saldo < 0) {
-            throw new IllegalArgumentException("The balance cannot be negative.");
-
-        }
+        dao.insert(historico);
     }
 
     @Override
     public List<Historico> consultarPorConta(int contaId) {
         if (contaId == 0) {
-            throw new IllegalArgumentException("Account is required.");
+            throw new IllegalArgumentException("The account ID must not be 0 or null.");
         }
-        List<Historico> historico = dao.findByContaId(contaId);
-        if (historico == null || historico.isEmpty()) {
-            throw new IllegalArgumentException("No history found for the given account.");
+        List<Historico> historicos = dao.consultarPorConta(contaId);
+        if (historicos.isEmpty()) {
+            throw new IllegalArgumentException("No history found for the given account ID: " + contaId);
         }
 
-        return historico;
-    }
-
-    @Override
-    public List<Historico> consultarPorAcao(String acao, int contaId) {
-        return List.of();
+        return historicos;
     }
 }
