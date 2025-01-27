@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="false">
+
+    <!-- Hide logback own logs -->
+    <statusListener class="org.apache.logging.log4j.core.status.NopStatusListener"/>
+    <contextListener class="org.apache.logging.log4j.jul.LevelChangePropagator"/>
+
+    <!-- Format the log output -->
+    <appender name="STDOUT" class="org.apache.logging.log4j.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n
+            </pattern>
+        </encoder>
+    </appender>
+
+    <!-- Set the application log level to INFO -->
+    <root level="INFO">
+    </root>
+
+    <!-- Set log level of Hibernate to WARN level -->
+    <logger name="org.hibernate">
+        <level value="WARN"/>
+    </logger>
+
+</configuration>
