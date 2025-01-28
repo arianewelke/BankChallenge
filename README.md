@@ -1,8 +1,6 @@
 # Bank Challenge
 
-# Sistema Bancário - Backend Java
-
-Descrição
+## Descrição
 Este é um sistema bancário desenvolvido em **Java** com um banco de dados relacional (**MySQL**). Ele permite a abertura de contas, login, consultas de saldo, saques, depósitos, transferências e visualização de extrato.
 
 ## Funcionalidades
