@@ -68,16 +68,8 @@ public class Conta implements Serializable {
         return historicos;
     }
 
-    public void setHistoricos(List<Historico> historicos) {
-        this.historicos = historicos;
-    }
-
     public String getTipo() {
         return tipo;
-    }
-
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
     }
 
     @Override

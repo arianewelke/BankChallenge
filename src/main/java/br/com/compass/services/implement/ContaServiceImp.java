@@ -55,15 +55,6 @@ public class ContaServiceImp implements ContaService {
     }
 
     @Override
-    public Conta findByNumero(String numero) {
-        Conta conta = dao.findByNumero(numero);
-        if (conta == null) {
-            throw new IllegalArgumentException("Account not found");
-        }
-        return conta;
-    }
-
-    @Override
     public Float amountDeposit(Conta conta, float amount) {
         if( amount < 0) {
             throw new IllegalArgumentException("Invalid value. Enter a positive value");

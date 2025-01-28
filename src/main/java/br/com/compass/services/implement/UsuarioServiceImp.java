@@ -9,11 +9,9 @@ import java.time.LocalDate;
 public class UsuarioServiceImp implements UsuarioService {
 
     private UsuarioDaoJPA dao;
-
     public UsuarioServiceImp(UsuarioDaoJPA dao) {
         this.dao = dao;
     }
-
 
     @Override
     public Usuario create(String nome, String telefone, String cpf, LocalDate dataNascimento, String senha) {
@@ -30,20 +28,6 @@ public class UsuarioServiceImp implements UsuarioService {
 
         return usuario;
     }
-
-//    @Override
-//    public Usuario findByCpf(String cpf) {
-//        if (cpf == null || cpf.trim().isEmpty()) {
-//            throw new IllegalArgumentException("CPF cannot be empty.");
-//        }
-//
-//        Usuario usuario = dao.findByCpf(cpf);
-//        if (usuario == null) {
-//            throw new IllegalArgumentException("User with the provided CPF not found.");
-//        }
-//
-//        return usuario;
-//    }
 
     @Override
     public Usuario findByCpfAndPassword(String cpf, String senha) {

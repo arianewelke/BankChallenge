@@ -17,11 +17,9 @@ public class HistoricoServiceImp implements HistoricoService {
         this.dao = dao;
     }
 
-
     @Override
     public void registrar(Conta conta, String acao, String mensagem) {
         Historico historico = new Historico(conta, acao, LocalDateTime.now(), conta.getSaldo(), mensagem);
-
         dao.insert(historico);
     }
 
@@ -34,7 +32,6 @@ public class HistoricoServiceImp implements HistoricoService {
         if (historicos.isEmpty()) {
             throw new IllegalArgumentException("No history found for the given account ID: " + contaId);
         }
-
         return historicos;
     }
 }

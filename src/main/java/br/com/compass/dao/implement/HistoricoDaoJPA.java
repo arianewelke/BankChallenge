@@ -23,40 +23,6 @@ public class HistoricoDaoJPA implements HistoricoDao {
     }
 
     @Override
-    public void update(Historico historico) {
-        EntityManager em = JpaUtil.getEntityManager();
-        try {
-            em.getTransaction().begin();
-            em.merge(historico);
-            em.getTransaction().commit();
-        } finally {
-            em.close();
-        }
-    }
-
-    @Override
-    public void deleteById(Historico historico) {
-        EntityManager em = JpaUtil.getEntityManager();
-        try {
-            em.getTransaction().begin();
-            em.remove(em.find(Historico.class, historico.getId()));
-            em.getTransaction().commit();
-        } finally {
-            em.close();
-        }
-    }
-
-    @Override
-    public Historico findById(int id) {
-        EntityManager em = JpaUtil.getEntityManager();
-        try {
-            return em.find(Historico.class, id);
-        } finally {
-            em.close();
-        }
-    }
-
-    @Override
     public List<Historico> consultarPorConta(int contaId) {
         EntityManager em = JpaUtil.getEntityManager();
         try {
