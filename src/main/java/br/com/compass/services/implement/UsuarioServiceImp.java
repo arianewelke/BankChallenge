@@ -20,6 +20,10 @@ public class UsuarioServiceImp implements UsuarioService {
         if(nome.isEmpty() || telefone.isEmpty() || cpf.isEmpty() || dataNascimento == null || senha == null) {
             throw new IllegalArgumentException("Fields must be filled in");
         }
+        Usuario usuarioExisixt = dao.findByCpf(cpf);
+        if(usuarioExisixt != null) {
+            throw new IllegalArgumentException("CPF already exists");
+        }
 
         Usuario usuario = new Usuario(nome, telefone, cpf, dataNascimento, senha);
         dao.insert(usuario);
@@ -57,7 +61,7 @@ public class UsuarioServiceImp implements UsuarioService {
 
     @Override
     public boolean isValidName(String name) {
-        return name.matches("[a-zA-ZÀ-ú\\s]+");
+        return name != null && name.length() >= 3 && name.matches("[a-zA-ZÀ-ú\\s]+");
     }
 
     @Override

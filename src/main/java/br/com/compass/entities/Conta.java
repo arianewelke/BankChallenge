@@ -17,10 +17,12 @@ public class Conta implements Serializable {
     private String tipo;
     private String numero;
 
-    @ManyToOne //muitos-para-um
+    //muitos usuarios-para-uma conta
+    @ManyToOne
     @JoinColumn(name = "usuarioId", nullable = false)
     private Usuario usuario;
 
+    //uma conta-para-muitos historicos
     @OneToMany(mappedBy = "conta", cascade = CascadeType.ALL)
     private List<Historico> historicos = new ArrayList<>();
 

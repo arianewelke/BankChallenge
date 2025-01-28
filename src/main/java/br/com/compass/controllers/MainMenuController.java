@@ -13,7 +13,9 @@ import br.com.compass.services.interfaces.HistoricoService;
 import br.com.compass.services.interfaces.UsuarioService;
 
 import javax.persistence.NoResultException;
+import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 
 public class MainMenuController {
@@ -99,7 +101,7 @@ public class MainMenuController {
             // Trata o caso em que a consulta ao banco não retorna resultados
             System.out.println("No user or account found for the provided credentials.");
         } catch (IllegalArgumentException e) {
-            // Trata o caso em de problemas no parametros
+            // Trata o caso de problemas nos parametros
             System.out.println("Erro: " + e.getMessage());
         } catch (Exception e) {
             // Trata outros erros inesperados
@@ -124,18 +126,36 @@ public class MainMenuController {
                 }
 
                 if (accountOption.equalsIgnoreCase("y")) {
+                    scanner.nextLine();
                     System.out.print("Enter your CPF: ");
-                    String cpf = scanner.next();
+                    String cpf = scanner.nextLine();
+                    while (!usuarioService.isValidCpf(cpf)) {
+                        System.out.println("Invalid CPF. It must contain exactly 11 digits. Please try again.");
 
-                    System.out.print("Enter password: ");
-                    String senha = scanner.next();
+                        System.out.print("Enter your CPF: ");
+                        cpf= scanner.nextLine();
+                    }
+
+                    System.out.print("Enter your password: ");
+                    String senha = scanner.nextLine();
+                    while (!usuarioService.isValidPassword(senha)) {
+                        System.out.println("Invalid password. It must contain exactly 4 digits. Please try again.");
+
+                        System.out.print("Enter your password: ");
+                        senha = scanner.nextLine();
+                    }
 
                     Usuario usuario = usuarioService.findByCpfAndPassword(cpf, senha);
                     if (usuario != null) {
                         System.out.println("User found: " + usuario.getNome());
                         System.out.print("Enter the type of account (current, savings, salary): ");
-                        scanner.nextLine(); // Consumir a quebra de linha
-                        String tipoConta = scanner.nextLine().toLowerCase(); // Converter string em minusculas
+                        String tipoConta = scanner.nextLine().toLowerCase();
+                        while(!contaService.isValidAccountType(tipoConta)) {
+                            System.out.println("Invalid account. Please enter 'current', 'savings' or 'salary'.");
+
+                            System.out.print("Enter the type of account (current, savings, salary): ");
+                            tipoConta = scanner.nextLine().toLowerCase();
+                        }
 
                         String contaNumero = contaService.create(0.0f, tipoConta, usuario);
                         System.out.println("Account created successfully! Account number: " + contaNumero);
@@ -154,9 +174,9 @@ public class MainMenuController {
                     System.out.print("Enter your name: ");
                     String nome = scanner.nextLine();
                     while (!usuarioService.isValidName(nome)) {
-                        System.out.println("Invalid name. It must contain only letters and spaces. Please try again.");
+                        System.out.println("Invalid name. It must have at least 3 letters and contain only letters and spaces.");
 
-                        System.out.print("Enter you name: ");
+                        System.out.print("Enter your name: ");
                         nome = scanner.nextLine();
                     }
 
@@ -179,12 +199,12 @@ public class MainMenuController {
                     }
 
                     System.out.print("Enter the type of account (current, savings, salary): ");
-                    String tipoOpen = scanner.nextLine().toLowerCase();
-                    while(!contaService.isValidAccountType(tipoOpen)) {
+                    String tipoConta = scanner.nextLine().toLowerCase();
+                    while(!contaService.isValidAccountType(tipoConta)) {
                         System.out.println("Invalid account. Please enter 'current', 'savings' or 'salary'.");
 
                         System.out.print("Enter the type of account (current, savings, salary): ");
-                        tipoOpen = scanner.nextLine().toLowerCase();
+                        tipoConta = scanner.nextLine().toLowerCase();
                     }
 
                     System.out.print("Enter your password: ");
@@ -198,15 +218,20 @@ public class MainMenuController {
 
                     System.out.print("Enter your date of birth (yyyy-MM-dd): ");
                     LocalDate dataNascimento = null;
-                    try {
-                        dataNascimento = LocalDate.parse(scanner.nextLine());
-                    } catch (Exception e) {
-                        System.out.println("Invalid date format. Please try again.");
-                        continue; // Recomeça o loop
+                    boolean dataValida = false;
+                    while (!dataValida) {
+                        System.out.print("Enter your date of birth (yyyy-MM-dd): ");
+                        try {
+                            dataNascimento = LocalDate.parse(scanner.nextLine());
+                            dataValida = true;
+                        } catch (DateTimeParseException e) {
+                            System.out.println("Invalid date format. Please try again.");
+                            // O loop continuara pedindo a data até o formato valido
+                        }
                     }
 
                     Usuario usuario = usuarioService.create(nome, telefone, cpf, dataNascimento, senha);
-                    String contaNumero = contaService.create(0.0f, tipoOpen, usuario);
+                    String contaNumero = contaService.create(0.0f, tipoConta, usuario);
                     System.out.println();
                     System.out.println("Account created successfully!");
                     System.out.println("Account Number: " + contaNumero);
