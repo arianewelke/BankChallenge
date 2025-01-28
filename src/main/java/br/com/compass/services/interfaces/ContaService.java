@@ -10,4 +10,6 @@ public interface ContaService {
     Float amountDeposit(Conta conta, float amount);
     Float amountWithdraw(Conta conta, float amount);
     Conta transfer(Conta contaOrigem, String numeroContaDestino, float amount);
+
+    boolean isValidAccountType(String type);
 }

@@ -27,19 +27,19 @@ public class UsuarioServiceImp implements UsuarioService {
         return usuario;
     }
 
-    @Override
-    public Usuario findByCpf(String cpf) {
-        if (cpf == null || cpf.trim().isEmpty()) {
-            throw new IllegalArgumentException("CPF cannot be empty.");
-        }
-
-        Usuario usuario = dao.findByCpf(cpf);
-        if (usuario == null) {
-            throw new IllegalArgumentException("User with the provided CPF not found.");
-        }
-
-        return usuario;
-    }
+//    @Override
+//    public Usuario findByCpf(String cpf) {
+//        if (cpf == null || cpf.trim().isEmpty()) {
+//            throw new IllegalArgumentException("CPF cannot be empty.");
+//        }
+//
+//        Usuario usuario = dao.findByCpf(cpf);
+//        if (usuario == null) {
+//            throw new IllegalArgumentException("User with the provided CPF not found.");
+//        }
+//
+//        return usuario;
+//    }
 
     @Override
     public Usuario findByCpfAndPassword(String cpf, String senha) {
@@ -49,10 +49,29 @@ public class UsuarioServiceImp implements UsuarioService {
 
         Usuario usuario = dao.findByCpfAndPassword(cpf, senha);
         if (usuario == null) {
-            throw new IllegalArgumentException("Username not found or invalid password.");
+            throw new IllegalArgumentException("CPF not found or invalid password.");
         }
 
         return usuario;
+    }
+
+    @Override
+    public boolean isValidName(String name) {
+        return name.matches("[a-zA-ZÀ-ú\\s]+");
+    }
+
+    @Override
+    public boolean isValidCpf(String cpf) {
+        return cpf.matches("\\d{11}");
+    }
+
+    @Override
+    public boolean isValidPhone(String phone) {
+        return phone.matches("\\d{10,11}");
+    }
+    @Override
+    public boolean isValidPassword(String password) {
+        return password.matches("\\d{4}");
     }
 
 }

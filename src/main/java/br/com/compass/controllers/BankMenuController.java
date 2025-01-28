@@ -118,6 +118,7 @@ public class BankMenuController {
 
             Conta result = contaService.transfer(conta, contaNumeroDestino, amount);
             if (result == null) {
+                return;
             }
 
             System.out.println("Transfer successful! New account balance: " + conta.getSaldo());
@@ -138,10 +139,11 @@ public class BankMenuController {
 
         for (Historico historico : extratos) {
             System.out.println();
-            System.out.println("=======================================");
             System.out.println("Operation: " + historico.getAcao());
-            System.out.println("Balance: " + historico.getSaldo());
+            System.out.println("Balance: R$ " + historico.getSaldo());
             System.out.println("Date: " + historico.getDataCriacao());
+            System.out.println("Message: " + historico.getMensagem());
+            System.out.println("=======================================");
 
         }
     }

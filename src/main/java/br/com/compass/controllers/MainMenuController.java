@@ -41,55 +41,20 @@ public class MainMenuController {
             System.out.print("Choose an option: ");
 
 
-            int option = scanner.nextInt();
+
+            String option = scanner.nextLine();
 
             switch (option) {
-                case 1: //BankMenu com login
-                    System.out.println();
-                    System.out.println("========== Bank Menu - Login ==========");
-                    System.out.print("- Enter your CPF: ");
-                    String cpfLogin = scanner.next();
-                    System.out.print("- Enter your password: ");
-                    String senhaLogin = scanner.next();
-                    System.out.println("- Enter your account type ");
-                    System.out.print("(current, savings, salary): ");
-                    String tipo = scanner.next();
-                    System.out.println("=======================================");
-
-                    Conta conta = null;
-                    try {
-                        // Tenta encontrar o usuário pelo CPF e senha
-                        Usuario usuario = usuarioService.findByCpfAndPassword(cpfLogin, senhaLogin);
-                        if (usuario != null) {
-                            // Busca a conta do usuário pelo número informado
-                            String contaNumero = (cpfLogin + "-" + tipo);
-                            conta = contaService.findByUsuarioIdAndNumero(usuario.getId(), contaNumero);
-                            if (conta != null) {
-                                // Login bem-sucedido, redireciona para o menu bancário
-                                System.out.println();
-                                System.out.println("Login successful! Welcome, " + usuario.getNome() + ".");
-                                new BankMenuController(contaService, scanner, historicoService, conta).run(); // Passa o usuário autenticado para o menu
-                            } else {
-                                System.out.println("Account not found. Please check the account number.");
-                            }
-                        } else {
-                            System.out.println("Invalid CPF or password. Please try again.");
-                        }
-                    } catch (NoResultException e) {
-                        // Trata o caso em que a consulta ao banco não retorna resultados
-                        System.out.println("No user or account found for the provided credentials.");
-                    } catch (Exception e) {
-                        // Trata outros erros inesperados
-                        System.out.println("An error occurred: " + e.getMessage());
-                    }
-                    new BankMenuController(contaService, scanner, historicoService, conta);
+                //BankMenu com login
+                case "1":
+                    Login();
                     break;
 
-                case 2:
+                case "2":
                     OpenAccount();
                     break;
 
-                case 0:
+                case "0":
                     running = false;
                     break;
 
@@ -97,6 +62,50 @@ public class MainMenuController {
                     System.out.println("Invalid option. Please try again.");
             }
         }
+    }
+
+    public void Login() {
+        System.out.println();
+        System.out.println("========== Bank Menu - Login ==========");
+        System.out.print("- Enter your CPF: ");
+        String cpfLogin = scanner.next();
+        System.out.print("- Enter your password: ");
+        String senhaLogin = scanner.next();
+        System.out.println("- Enter your account type ");
+        System.out.print("(current, savings, salary): ");
+        String tipo = scanner.next();
+        System.out.println("=======================================");
+
+        Conta conta;
+        try {
+            // Tenta encontrar o usuário pelo CPF e senha
+            Usuario usuario = usuarioService.findByCpfAndPassword(cpfLogin, senhaLogin);
+            if (usuario != null) {
+                // Busca a conta do usuário pelo número informado
+                String contaNumero = (cpfLogin + "-" + tipo);
+                conta = contaService.findByUsuarioIdAndNumero(usuario.getId(), contaNumero);
+                if (conta != null) {
+                    // Login bem-sucedido, redireciona para o menu bancário
+                    System.out.println();
+                    System.out.println("Login successful! Welcome, " + usuario.getNome() + ".");
+                    new BankMenuController(contaService, scanner, historicoService, conta).run(); // Passa o usuário autenticado para o menu
+                } else {
+                    System.out.println("Account not found. Please check the account number.");
+                }
+            } else {
+                System.out.println("Invalid CPF or password. Please try again.");
+            }
+        } catch (NoResultException e) {
+            // Trata o caso em que a consulta ao banco não retorna resultados
+            System.out.println("No user or account found for the provided credentials.");
+        } catch (IllegalArgumentException e) {
+            // Trata o caso em de problemas no parametros
+            System.out.println("Erro: " + e.getMessage());
+        } catch (Exception e) {
+            // Trata outros erros inesperados
+            System.out.println("An error occurred: " + e.getMessage());
+        }
+        scanner.nextLine();
     }
 
     public void OpenAccount() {
@@ -117,6 +126,7 @@ public class MainMenuController {
                 if (accountOption.equalsIgnoreCase("y")) {
                     System.out.print("Enter your CPF: ");
                     String cpf = scanner.next();
+
                     System.out.print("Enter password: ");
                     String senha = scanner.next();
 
@@ -143,18 +153,48 @@ public class MainMenuController {
                     scanner.nextLine(); // Consumir a quebra de linha
                     System.out.print("Enter your name: ");
                     String nome = scanner.nextLine();
+                    while (!usuarioService.isValidName(nome)) {
+                        System.out.println("Invalid name. It must contain only letters and spaces. Please try again.");
+
+                        System.out.print("Enter you name: ");
+                        nome = scanner.nextLine();
+                    }
 
                     System.out.print("Enter your CPF: ");
                     String cpf = scanner.nextLine();
+                    while (!usuarioService.isValidCpf(cpf)) {
+                        System.out.println("Invalid CPF. It must contain exactly 11 digits. Please try again.");
+
+                        System.out.print("Enter your CPF: ");
+                        cpf= scanner.nextLine();
+                    }
 
                     System.out.print("Enter your phone: ");
                     String telefone = scanner.nextLine();
+                    while (!usuarioService.isValidPhone(telefone)) {
+                        System.out.println("Invalid phone. It must contain 10 or 11 digits. Please try again.");
+
+                        System.out.print("Enter your phone: ");
+                        telefone = scanner.nextLine();
+                    }
 
                     System.out.print("Enter the type of account (current, savings, salary): ");
                     String tipoOpen = scanner.nextLine().toLowerCase();
+                    while(!contaService.isValidAccountType(tipoOpen)) {
+                        System.out.println("Invalid account. Please enter 'current', 'savings' or 'salary'.");
+
+                        System.out.print("Enter the type of account (current, savings, salary): ");
+                        tipoOpen = scanner.nextLine().toLowerCase();
+                    }
 
                     System.out.print("Enter your password: ");
                     String senha = scanner.nextLine();
+                    while (!usuarioService.isValidPassword(senha)) {
+                        System.out.println("Invalid password. It must contain exactly 4 digits. Please try again.");
+
+                        System.out.print("Enter your password: ");
+                        senha = scanner.nextLine();
+                    }
 
                     System.out.print("Enter your date of birth (yyyy-MM-dd): ");
                     LocalDate dataNascimento = null;
@@ -167,15 +207,19 @@ public class MainMenuController {
 
                     Usuario usuario = usuarioService.create(nome, telefone, cpf, dataNascimento, senha);
                     String contaNumero = contaService.create(0.0f, tipoOpen, usuario);
+                    System.out.println();
                     System.out.println("Account created successfully!");
                     System.out.println("Account Number: " + contaNumero);
                     System.out.println("=================================================================");
                     isCreatingAccount = false; // Finaliza o loop
 
                 }
+            } catch (IllegalArgumentException e) {
+                // Trata o caso em de problemas nos parametros
+                System.out.println("Erro: " + e.getMessage());
             } catch (Exception e) {
-                System.err.println("Error during account creation: " + e.getMessage());
-                break;
+                // Trata outros erros inesperados
+                System.out.println("An error occurred: " + e.getMessage());
             }
         }
     }

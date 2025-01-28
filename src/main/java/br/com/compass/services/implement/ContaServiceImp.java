@@ -1,6 +1,5 @@
 package br.com.compass.services.implement;
 
-import br.com.compass.dao.Interfaces.HistoricoDao;
 import br.com.compass.dao.implement.ContaDaoJPA;
 import br.com.compass.entities.Conta;
 import br.com.compass.entities.Usuario;
@@ -9,6 +8,7 @@ import br.com.compass.services.interfaces.HistoricoService;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 public class ContaServiceImp implements ContaService {
     private ContaDaoJPA dao;
@@ -76,7 +76,7 @@ public class ContaServiceImp implements ContaService {
         conta.deposit(amount);
         dao.update(conta);
 
-        historicoService.registrar(conta, "deposit");
+        historicoService.registrar(conta, "deposit", "deposited the amount: R$ " + amount);
 
         return conta.getSaldo();
     }
@@ -95,7 +95,7 @@ public class ContaServiceImp implements ContaService {
         conta.withdraw(amount);
         dao.update(conta);
 
-        historicoService.registrar(conta, "withdraw");
+        historicoService.registrar(conta, "withdraw", "withdrawn the amount: R$ " + amount);
 
         return conta.getSaldo();
     }
@@ -117,6 +117,7 @@ public class ContaServiceImp implements ContaService {
         Conta contaDestino = dao.findByNumero(numeroContaDestino);
         if(contaDestino == null) {
             System.out.println("Receiver account not found");
+            return null;
         }
 
         contaOrigem.withdraw(amount);
@@ -125,11 +126,17 @@ public class ContaServiceImp implements ContaService {
         dao.update(contaOrigem);
         dao.update(contaDestino);
 
-        historicoService.registrar(contaOrigem, "transfer - out");
+        historicoService.registrar(contaOrigem, "transfer - out", "transfed the amount: R$ " + amount + " to " + numeroContaDestino);
         System.out.println(contaOrigem.getNumero());
-        historicoService.registrar(contaDestino, "transfer - in");
+        historicoService.registrar(contaDestino, "transfer - in", "received the amount: R$ " + amount + " from " + contaOrigem.getNumero());
         System.out.println(contaDestino.getNumero());
 
         return contaOrigem;
+    }
+
+    @Override
+    public boolean isValidAccountType(String type) {
+        Set<String> validTypes = Set.of("current", "savings", "salary");
+        return validTypes.contains(type.toLowerCase());
     }
 }

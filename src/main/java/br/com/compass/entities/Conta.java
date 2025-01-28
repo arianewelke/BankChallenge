@@ -17,8 +17,8 @@ public class Conta implements Serializable {
     private String tipo;
     private String numero;
 
-    @OneToOne
-    @JoinColumn(name = "usuarioId", unique = true, nullable = false)  // Relacionamento um-para-um
+    @ManyToOne //muitos-para-um
+    @JoinColumn(name = "usuarioId", nullable = false)
     private Usuario usuario;
 
     @OneToMany(mappedBy = "conta", cascade = CascadeType.ALL)
@@ -34,13 +34,6 @@ public class Conta implements Serializable {
         this.usuario = usuario;
     }
 
-    public List<Historico> getHistoricos() {
-        return historicos;
-    }
-
-    public void setHistoricos(List<Historico> historicos) {
-        this.historicos = historicos;
-    }
 
     public int getId() {
         return id;
@@ -48,10 +41,6 @@ public class Conta implements Serializable {
 
     public String getNumero() {
         return numero;
-    }
-
-    public void setNumero(String numero) {
-        this.numero = numero;
     }
 
     public Float getSaldo() {
@@ -66,20 +55,27 @@ public class Conta implements Serializable {
         this.saldo -= amount;
     }
 
-    public String getTipo() {
-        return tipo;
-    }
-
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
-    }
-
     public Usuario getUsuario() {
         return usuario;
     }
 
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
+    }
+    public List<Historico> getHistoricos() {
+        return historicos;
+    }
+
+    public void setHistoricos(List<Historico> historicos) {
+        this.historicos = historicos;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
 
     @Override
@@ -94,6 +90,5 @@ public class Conta implements Serializable {
     public int hashCode() {
         return id;
     }
-
 
 }

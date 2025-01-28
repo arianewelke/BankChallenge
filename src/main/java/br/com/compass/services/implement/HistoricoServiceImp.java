@@ -19,8 +19,8 @@ public class HistoricoServiceImp implements HistoricoService {
 
 
     @Override
-    public void registrar(Conta conta, String acao) {
-        Historico historico = new Historico(conta, acao, LocalDateTime.now(), conta.getSaldo());
+    public void registrar(Conta conta, String acao, String mensagem) {
+        Historico historico = new Historico(conta, acao, LocalDateTime.now(), conta.getSaldo(), mensagem);
 
         dao.insert(historico);
     }

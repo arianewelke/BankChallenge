@@ -14,7 +14,7 @@ public class Historico implements Serializable {
     private String acao;
     private LocalDateTime dataCriacao;
     private Float saldo;
-    private String usuarioId;
+    private String mensagem;
 
     @ManyToOne //Muitos historicos para uma conta
     @JoinColumn(name = "contaId", nullable = false)  // Chave estrangeira para Conta
@@ -22,22 +22,18 @@ public class Historico implements Serializable {
 
 
     public Historico() {
-
     }
 
-    public Historico(Conta conta, String acao, LocalDateTime dataCriacao, Float saldo) {
+    public Historico(Conta conta, String acao, LocalDateTime dataCriacao, Float saldo, String mensagem) {
         this.conta = conta;
         this.acao = acao;
         this.dataCriacao = dataCriacao;
         this.saldo = saldo;
+        this.mensagem = mensagem;
     }
 
     public String getAcao() {
         return acao;
-    }
-
-    public void setAcao(String acao) {
-        this.acao = acao;
     }
 
     public Conta getConta() {
@@ -49,10 +45,7 @@ public class Historico implements Serializable {
     public LocalDateTime getDataCriacao() {
         return dataCriacao;
     }
-
-    public void setDataCriacao(LocalDateTime dataCriacao) {
-        this.dataCriacao = dataCriacao;
-    }
+    public String getMensagem() { return mensagem; }
 
     public int getId() {
         return id;
@@ -60,10 +53,6 @@ public class Historico implements Serializable {
 
     public Float getSaldo() {
         return saldo;
-    }
-
-    public void setSaldo(Float saldo) {
-        this.saldo = saldo;
     }
 
     @Override
