@@ -22,18 +22,18 @@ Este é um sistema bancário desenvolvido em **Java** com um banco de dados rela
 Abaixo está o diagrama ER do banco de dados:
 
 
-![Diagrama ER](https://raw.githubusercontent.com/arianewelke/BankChallenge/refs/heads/main/assets/BankChallange-DB.png)
+![Diagrama ER](https://raw.githubusercontent.com/arianewelke/BankChallenge/refs/heads/main/assets/EER.png)
 
 ### Estrutura das Tabelas
 #### 🔹 Tabela `user`
 ```sql
 CREATE TABLE user(
   id INT AUTO_INCREMENT PRIMARY KEY,
-  nome VARCHAR(100) NOT NULL,
-  telefone VARCHAR(15) NOT NULL,
+  name VARCHAR(100) NOT NULL,
+  phone VARCHAR(15) NOT NULL,
   cpf CHAR(11) NOT NULL UNIQUE, 
-  dataNascimento DATE NOT NULL,
-  senha CHAR(4) NOT NULL
+  dateBirth DATE NOT NULL,
+  password CHAR(4) NOT NULL
 );
 ```
 
@@ -41,11 +41,11 @@ CREATE TABLE user(
 ```sql
 CREATE TABLE account (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  usuarioId INT NOT NULL,
-  saldo DECIMAL(10,2) DEFAULT 0.00,
-  tipo VARCHAR(20) NOT NULL,
-  numero VARCHAR(50) UNIQUE NOT NULL,
-  FOREIGN KEY (usuarioId) REFERENCES user(id)
+  userId INT NOT NULL,
+  balance DECIMAL(10,2) DEFAULT 0.00,
+  type VARCHAR(20) NOT NULL,
+  number VARCHAR(50) UNIQUE NOT NULL,
+  FOREIGN KEY (userId) REFERENCES user(id)
 );
 ```
 
@@ -53,12 +53,12 @@ CREATE TABLE account (
 ```sql
 CREATE TABLE statement ( 
   id INT AUTO_INCREMENT PRIMARY KEY,
-  contaId INT NOT NULL,
-  acao VARCHAR(50) NOT NULL,
-  dataCriacao DATETIME DEFAULT CURRENT_TIMESTAMP,
-  saldo DECIMAL(10,2) NOT NULL,
-  mensagem VARCHAR(100) NOT NULL,
-  FOREIGN KEY (contaId) REFERENCES account(id)
+  accountId INT NOT NULL,
+  action VARCHAR(50) NOT NULL,
+  dateCreation DATETIME DEFAULT CURRENT_TIMESTAMP,
+  balance DECIMAL(10,2) NOT NULL,
+  message VARCHAR(100) NOT NULL,
+  FOREIGN KEY (accountId) REFERENCES account(id)
 );
 ```
 
