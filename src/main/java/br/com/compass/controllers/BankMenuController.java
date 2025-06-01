@@ -1,25 +1,26 @@
 package br.com.compass.controllers;
 
-import br.com.compass.entities.Conta;
-import br.com.compass.entities.Historico;
-import br.com.compass.services.interfaces.ContaService;
-import br.com.compass.services.interfaces.HistoricoService;
+import br.com.compass.entities.Account;
+import br.com.compass.entities.Statement;
+import br.com.compass.services.interfaces.AccountService;
+import br.com.compass.services.interfaces.StatementService;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Scanner;
 
 
 public class BankMenuController {
     private final Scanner scanner;
-    private final ContaService contaService;
-    private final HistoricoService historicoService;
-    private final Conta conta;
+    private final AccountService accountService;
+    private final StatementService statementService;
+    private final Account account;
 
-    public BankMenuController(ContaService contaService, Scanner scanner, HistoricoService historicoService, Conta conta) {
-        this.contaService = contaService;
+    public BankMenuController(AccountService accountService, Scanner scanner, StatementService statementService, Account account) {
+        this.accountService = accountService;
         this.scanner = scanner;
-        this.historicoService = historicoService;
-        this.conta = conta;
+        this.statementService = statementService;
+        this.account = account;
     }
 
     public void run() {
@@ -69,9 +70,9 @@ public class BankMenuController {
             System.out.println();
             System.out.println("================== Deposit ==================");
             System.out.print("- Enter the amount to deposit: ");
-            float amount = scanner.nextFloat();
+            float amount = Float.parseFloat(scanner.nextLine());
             //busca a conta pelo usuario
-            Float saldo = contaService.amountDeposit(conta, amount);
+            Float saldo = accountService.amountDeposit(account, amount);
             System.out.println();
             System.out.println("Deposit successful! New account balance: " + saldo);
             System.out.println("=============================================");
@@ -89,7 +90,7 @@ public class BankMenuController {
             System.out.println("================== Withdraw ==================");
             System.out.print("- Enter the amount to withdraw: ");
             float amount = scanner.nextFloat();
-            Float saldo = contaService.amountWithdraw(conta, amount);
+            Float saldo = accountService.amountWithdraw(account, amount);
             System.out.println();
             System.out.println("Withdraw successful! New account balance: " + saldo);
             System.out.println("==============================================");
@@ -103,7 +104,7 @@ public class BankMenuController {
     private void checkBalance() {
         System.out.println();
         System.out.println("====== Check Balance ========");
-        System.out.println("Check Balance: " + conta.getSaldo());
+        System.out.println("Check Balance: " + account.getBalance());
         System.out.println("=============================");
     }
 
@@ -112,16 +113,25 @@ public class BankMenuController {
             System.out.println();
             System.out.println("============================= Transfer =============================");
             System.out.print("- Enter the number account to be transferred: ");
-            String contaNumeroDestino = scanner.next();
+            String destinyNumberAccount = scanner.next();
             System.out.print("- Enter the amount to be transferred: ");
             float amount = scanner.nextFloat();
 
-            Conta result = contaService.transfer(conta, contaNumeroDestino, amount);
+            //teste
+            System.out.print("Confirm operation? (Y/N): ");
+            String confirm = scanner.next().toLowerCase();
+            if (!confirm.equals("y")) {
+                System.out.println("Operation cancelled.");
+                return;
+            }
+            //teste
+
+            Account result = accountService.transfer(account, destinyNumberAccount, amount);
             if (result == null) {
                 return;
             }
 
-            System.out.println("Transfer successful! New account balance: " + conta.getSaldo());
+            System.out.println("Transfer successful! New account balance: " + account.getBalance());
             System.out.println("=======================================================================");
 
         } catch (IllegalArgumentException e) {
@@ -135,16 +145,17 @@ public class BankMenuController {
         System.out.println();
         System.out.print("============== Bank Statement ==============");
         System.out.println();
-        List<Historico> extratos = historicoService.consultarPorConta(conta.getId());
+        List<Statement> statements = statementService.consultarPorConta(account.getId());
 
-        for (Historico historico : extratos) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+
+        for (Statement statement : statements) {
             System.out.println();
-            System.out.println("Operation: " + historico.getAcao());
-            System.out.println("Balance: R$ " + historico.getSaldo());
-            System.out.println("Date: " + historico.getDataCriacao());
-            System.out.println("Message: " + historico.getMensagem());
+            System.out.println("Operation: " + statement.getAction());
+            System.out.printf("Balance: R$ %.2f%n", statement.getBalance());
+            System.out.println("Date: " + statement.getDateCreation().format(formatter));
+            System.out.println("Message: " + statement.getMessage());
             System.out.println("=======================================");
-
         }
     }
 }

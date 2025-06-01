@@ -1,15 +1,15 @@
 # Bank Challenge
 
 ## Descrição
-Este é um sistema bancário desenvolvido em **Java** com um banco de dados relacional (**MySQL**). Ele permite a abertura de contas, login, consultas de saldo, saques, depósitos, transferências e visualização de extrato.
+Este é um sistema bancário desenvolvido em **Java** com um banco de dados relacional (**MySQL**). Ele permite a abertura de accounts, login, consultas de saldo, saques, depósitos, transferências e visualização de extrato.
 
 ## Funcionalidades
-- **Abertura de Conta**: Permite a criação de contas de diferentes tipos.
--  **Login**: O usuário pode acessar sua conta mediante CPF e senha.
+- **Abertura de Conta**: Permite a criação de accounts de diferentes tipos.
+-  **Login**: O usuário pode acessar sua account mediante CPF e senha.
 -  **Visualização de Saldo**: O saldo pode ser consultado após login.
 -  **Realizar Saques**: Saque de valores conforme saldo disponível.
--  **Realizar Depósitos**: Adição de valores à conta do usuário.
--  **Realizar Transferências**: Envio de valores para outra conta.
+-  **Realizar Depósitos**: Adição de valores à account do usuário.
+-  **Realizar Transferências**: Envio de valores para outra account.
 -  **Visualizar Extrato**: Histórico completo de transações (saques, depósitos e transferências).
 
 ## Tecnologias Utilizadas
@@ -25,9 +25,9 @@ Abaixo está o diagrama ER do banco de dados:
 ![Diagrama ER](https://raw.githubusercontent.com/arianewelke/BankChallenge/refs/heads/main/assets/BankChallange-DB.png)
 
 ### Estrutura das Tabelas
-#### 🔹 Tabela `usuario`
+#### 🔹 Tabela `user`
 ```sql
-CREATE TABLE usuario(
+CREATE TABLE user(
   id INT AUTO_INCREMENT PRIMARY KEY,
   nome VARCHAR(100) NOT NULL,
   telefone VARCHAR(15) NOT NULL,
@@ -37,28 +37,28 @@ CREATE TABLE usuario(
 );
 ```
 
-#### 🔹 Tabela `conta`
+#### 🔹 Tabela `account`
 ```sql
-CREATE TABLE conta (
+CREATE TABLE account (
   id INT AUTO_INCREMENT PRIMARY KEY,
   usuarioId INT NOT NULL,
   saldo DECIMAL(10,2) DEFAULT 0.00,
   tipo VARCHAR(20) NOT NULL,
   numero VARCHAR(50) UNIQUE NOT NULL,
-  FOREIGN KEY (usuarioId) REFERENCES usuario(id)
+  FOREIGN KEY (usuarioId) REFERENCES user(id)
 );
 ```
 
-#### 🔹 Tabela `historico`
+#### 🔹 Tabela `statement`
 ```sql
-CREATE TABLE historico ( 
+CREATE TABLE statement ( 
   id INT AUTO_INCREMENT PRIMARY KEY,
   contaId INT NOT NULL,
   acao VARCHAR(50) NOT NULL,
   dataCriacao DATETIME DEFAULT CURRENT_TIMESTAMP,
   saldo DECIMAL(10,2) NOT NULL,
   mensagem VARCHAR(100) NOT NULL,
-  FOREIGN KEY (contaId) REFERENCES conta(id)
+  FOREIGN KEY (contaId) REFERENCES account(id)
 );
 ```
 

@@ -1,20 +1,20 @@
 package br.com.compass.dao.implement;
 
-import br.com.compass.dao.Interfaces.ContaDao;
-import br.com.compass.entities.Conta;
+import br.com.compass.dao.Interfaces.AccountDao;
+import br.com.compass.entities.Account;
 import br.com.compass.util.JpaUtil;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import java.util.List;
 
-public class ContaDaoJPA implements ContaDao {
+public class AccountDaoJPA implements AccountDao {
 
     @Override
-    public void insert(Conta conta) {
+    public void insert(Account account) {
         EntityManager em = JpaUtil.getEntityManager();
         try {
             em.getTransaction().begin();
-            em.persist(conta);
+            em.persist(account);
             em.getTransaction().commit();
         } finally {
             em.close();
@@ -22,11 +22,11 @@ public class ContaDaoJPA implements ContaDao {
     }
 
     @Override
-    public void update(Conta conta) {
+    public void update(Account account) {
         EntityManager em = JpaUtil.getEntityManager();
         try {
             em.getTransaction().begin();
-            em.merge(conta);
+            em.merge(account);
             em.getTransaction().commit();
         } finally {
             em.close();
@@ -34,11 +34,11 @@ public class ContaDaoJPA implements ContaDao {
     }
 
     @Override
-    public Conta findByNumero(String numero) {
+    public Account findByNumber(String number) {
         EntityManager em = JpaUtil.getEntityManager();
         try {
-            return em.createQuery("FROM Conta c WHERE c.numero = :numero", Conta.class)
-                    .setParameter("numero", numero)
+            return em.createQuery("FROM Account c WHERE c.number = :number", Account.class)
+                    .setParameter("number", number)
                     .getSingleResult();
         } catch (NoResultException e) {
             return null;
@@ -48,28 +48,28 @@ public class ContaDaoJPA implements ContaDao {
     }
 
     @Override
-    public Boolean existsAccountByUsuarioIdAndTipo(int usuarioId, String tipo) {
+    public Boolean existsAccountByUserIdAndType(int userId, String type) {
         EntityManager em = JpaUtil.getEntityManager();
         try {
-            List<Conta> contas = em.createQuery(
-                            "FROM Conta c WHERE c.usuario.id = :usuarioId AND c.tipo = :tipo", Conta.class)
-                    .setParameter("usuarioId", usuarioId)
-                    .setParameter("tipo", tipo)
+            List<Account> accounts = em.createQuery(
+                            "FROM Account c WHERE c.user.id = :userId AND c.type = :type", Account.class)
+                    .setParameter("userId", userId)
+                    .setParameter("type", type)
                     .getResultList();
-            return !contas.isEmpty();
+            return !accounts.isEmpty();
         } finally {
             em.close();
         }
     }
 
     @Override
-    public Conta findByUsuarioIdAndNumero(int usuarioId, String numero) {
+    public Account findByUserIdAndNumber(int userId, String number) {
         EntityManager em = JpaUtil.getEntityManager();
         try {
             return em.createQuery(
-                            "FROM Conta c WHERE c.usuario.id = :usuarioId AND c.numero = :numero", Conta.class)
-                    .setParameter("usuarioId", usuarioId)
-                    .setParameter("numero", numero)
+                            "FROM Account c WHERE c.user.id = :userId AND c.number = :number", Account.class)
+                    .setParameter("userId", userId)
+                    .setParameter("number", number)
                     .getSingleResult();
         } catch (NoResultException e) {
             return null;

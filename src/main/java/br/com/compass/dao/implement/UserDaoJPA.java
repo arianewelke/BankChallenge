@@ -1,19 +1,19 @@
 package br.com.compass.dao.implement;
 
-import br.com.compass.dao.Interfaces.UsuarioDao;
-import br.com.compass.entities.Usuario;
+import br.com.compass.dao.Interfaces.UserDao;
+import br.com.compass.entities.User;
 import br.com.compass.util.JpaUtil;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 
-public class UsuarioDaoJPA implements UsuarioDao {
+public class UserDaoJPA implements UserDao {
 
     @Override
-    public void insert(Usuario usuario) {
+    public void insert(User user) {
         EntityManager em = JpaUtil.getEntityManager();
         try {
             em.getTransaction().begin();
-            em.persist(usuario);
+            em.persist(user);
             em.getTransaction().commit();
         } catch (Exception e) {
             System.out.println("Error inserting: " + e.getMessage());
@@ -23,10 +23,10 @@ public class UsuarioDaoJPA implements UsuarioDao {
     }
 
     @Override
-    public Usuario findByCpf(String cpf) {
+    public User findByCpf(String cpf) {
         EntityManager em = JpaUtil.getEntityManager();
         try {
-            return em.createQuery("FROM Usuario u WHERE u.cpf = :cpf", Usuario.class)
+            return em.createQuery("FROM User u WHERE u.cpf = :cpf", User.class)
                     .setParameter("cpf", cpf)
                     .getSingleResult();
         } catch (Exception e) {
@@ -38,13 +38,13 @@ public class UsuarioDaoJPA implements UsuarioDao {
     }
 
     @Override
-    public Usuario findByCpfAndPassword(String cpf, String senha) {
+    public User findByCpfAndPassword(String cpf, String password) {
         EntityManager em = JpaUtil.getEntityManager();
         try {
             return em.createQuery(
-                            "FROM Usuario u WHERE u.cpf = :cpf AND u.senha = :senha", Usuario.class)
+                            "FROM User u WHERE u.cpf = :cpf AND u.password = :password", User.class)
                     .setParameter("cpf", cpf)
-                    .setParameter("senha", senha)
+                    .setParameter("password", password)
                     .getSingleResult();
         } catch (NoResultException e) {
             return null;

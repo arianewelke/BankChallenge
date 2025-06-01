@@ -1,33 +1,32 @@
 package br.com.compass.controllers;
 
-import br.com.compass.dao.implement.ContaDaoJPA;
-import br.com.compass.dao.implement.HistoricoDaoJPA;
-import br.com.compass.dao.implement.UsuarioDaoJPA;
-import br.com.compass.entities.Conta;
-import br.com.compass.entities.Usuario;
-import br.com.compass.services.implement.ContaServiceImp;
-import br.com.compass.services.implement.HistoricoServiceImp;
-import br.com.compass.services.implement.UsuarioServiceImp;
-import br.com.compass.services.interfaces.ContaService;
-import br.com.compass.services.interfaces.HistoricoService;
-import br.com.compass.services.interfaces.UsuarioService;
+import br.com.compass.dao.implement.AccountDaoJPA;
+import br.com.compass.dao.implement.StatementDaoJPA;
+import br.com.compass.dao.implement.UserDaoJPA;
+import br.com.compass.entities.Account;
+import br.com.compass.entities.User;
+import br.com.compass.services.implement.AccountServiceImp;
+import br.com.compass.services.implement.StatementServiceImp;
+import br.com.compass.services.implement.UserServiceImp;
+import br.com.compass.services.interfaces.AccountService;
+import br.com.compass.services.interfaces.StatementService;
+import br.com.compass.services.interfaces.UserService;
 
 import javax.persistence.NoResultException;
-import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 
 public class MainMenuController {
     private final Scanner scanner;
-    private final UsuarioService usuarioService;
-    private final ContaService contaService;
-    private final HistoricoService historicoService;
+    private final UserService userService;
+    private final AccountService accountService;
+    private final StatementService statementService;
 
     public MainMenuController() {
-        this.historicoService = new HistoricoServiceImp(new HistoricoDaoJPA());
-        this.contaService = new ContaServiceImp(new ContaDaoJPA(), (HistoricoServiceImp) this.historicoService);
-        this.usuarioService = new UsuarioServiceImp(new UsuarioDaoJPA());
+        this.statementService = new StatementServiceImp(new StatementDaoJPA());
+        this.accountService = new AccountServiceImp(new AccountDaoJPA(), (StatementServiceImp) this.statementService);
+        this.userService = new UserServiceImp(new UserDaoJPA());
         this.scanner = new Scanner(System.in);
     }
 
@@ -72,25 +71,35 @@ public class MainMenuController {
         System.out.print("- Enter your CPF: ");
         String cpfLogin = scanner.next();
         System.out.print("- Enter your password: ");
-        String senhaLogin = scanner.next();
-        System.out.println("- Enter your account type ");
-        System.out.print("(current, savings, salary): ");
-        String tipo = scanner.next();
+        String passwordLogin = scanner.next();
+        String type = "";
+        boolean validType = false;
+        while (!validType) {
+            System.out.print("- Enter your account type ");
+            System.out.print("(current, savings, salary): ");
+            type = scanner.next().toLowerCase();
+
+            if (accountService.isValidAccountType(type)) {
+                validType = true;
+            } else {
+                System.out.println("Invalid account type. Please enter 'current', 'savings' or 'salary'.");
+            }
+        }
         System.out.println("=======================================");
 
-        Conta conta;
+        Account account;
         try {
             // Tenta encontrar o usuário pelo CPF e senha
-            Usuario usuario = usuarioService.findByCpfAndPassword(cpfLogin, senhaLogin);
-            if (usuario != null) {
+            User user = userService.findByCpfAndPassword(cpfLogin, passwordLogin);
+            if (user != null) {
                 // Busca a conta do usuário pelo número informado
-                String contaNumero = (cpfLogin + "-" + tipo);
-                conta = contaService.findByUsuarioIdAndNumero(usuario.getId(), contaNumero);
-                if (conta != null) {
+                String contaNumero = (cpfLogin + "-" + type);
+                account = accountService.findByUsuarioIdAndNumero(user.getId(), contaNumero);
+                if (account != null) {
                     // Login bem-sucedido, redireciona para o menu bancário
                     System.out.println();
-                    System.out.println("Login successful! Welcome, " + usuario.getNome() + ".");
-                    new BankMenuController(contaService, scanner, historicoService, conta).run(); // Passa o usuário autenticado para o menu
+                    System.out.println("Login successful! Welcome, " + user.getName() + ".");
+                    new BankMenuController(accountService, scanner, statementService, account).run(); // Passa o usuário autenticado para o menu
                 } else {
                     System.out.println("Account not found. Please check the account number.");
                 }
@@ -129,7 +138,7 @@ public class MainMenuController {
                     scanner.nextLine();
                     System.out.print("Enter your CPF: ");
                     String cpf = scanner.nextLine();
-                    while (!usuarioService.isValidCpf(cpf)) {
+                    while (!userService.isValidCpf(cpf)) {
                         System.out.println("Invalid CPF. It must contain exactly 11 digits. Please try again.");
 
                         System.out.print("Enter your CPF: ");
@@ -137,28 +146,28 @@ public class MainMenuController {
                     }
 
                     System.out.print("Enter your password: ");
-                    String senha = scanner.nextLine();
-                    while (!usuarioService.isValidPassword(senha)) {
+                    String password = scanner.nextLine();
+                    while (!userService.isValidPassword(password)) {
                         System.out.println("Invalid password. It must contain exactly 4 digits. Please try again.");
 
                         System.out.print("Enter your password: ");
-                        senha = scanner.nextLine();
+                        password = scanner.nextLine();
                     }
 
-                    Usuario usuario = usuarioService.findByCpfAndPassword(cpf, senha);
-                    if (usuario != null) {
-                        System.out.println("User found: " + usuario.getNome());
+                    User user = userService.findByCpfAndPassword(cpf, password);
+                    if (user != null) {
+                        System.out.println("User found: " + user.getName());
                         System.out.print("Enter the type of account (current, savings, salary): ");
-                        String tipoConta = scanner.nextLine().toLowerCase();
-                        while(!contaService.isValidAccountType(tipoConta)) {
+                        String accountType = scanner.nextLine().toLowerCase();
+                        while(!accountService.isValidAccountType(accountType)) {
                             System.out.println("Invalid account. Please enter 'current', 'savings' or 'salary'.");
 
                             System.out.print("Enter the type of account (current, savings, salary): ");
-                            tipoConta = scanner.nextLine().toLowerCase();
+                            accountType = scanner.nextLine().toLowerCase();
                         }
 
-                        String contaNumero = contaService.create(0.0f, tipoConta, usuario);
-                        System.out.println("Account created successfully! Account number: " + contaNumero);
+                        String numberAccount = accountService.create(0.0f, accountType, user);
+                        System.out.println("Account created successfully! Account number: " + numberAccount);
 
                         new MainMenuController().run();
 
@@ -172,17 +181,17 @@ public class MainMenuController {
                     System.out.println("============================ Account Opening ====================");
                     scanner.nextLine(); // Consumir a quebra de linha
                     System.out.print("Enter your name: ");
-                    String nome = scanner.nextLine();
-                    while (!usuarioService.isValidName(nome)) {
+                    String name = scanner.nextLine();
+                    while (!userService.isValidName(name)) {
                         System.out.println("Invalid name. It must have at least 3 letters and contain only letters and spaces.");
 
                         System.out.print("Enter your name: ");
-                        nome = scanner.nextLine();
+                        name = scanner.nextLine();
                     }
 
                     System.out.print("Enter your CPF: ");
                     String cpf = scanner.nextLine();
-                    while (!usuarioService.isValidCpf(cpf)) {
+                    while (!userService.isValidCpf(cpf)) {
                         System.out.println("Invalid CPF. It must contain exactly 11 digits. Please try again.");
 
                         System.out.print("Enter your CPF: ");
@@ -190,26 +199,26 @@ public class MainMenuController {
                     }
 
                     System.out.print("Enter your phone: ");
-                    String telefone = scanner.nextLine();
-                    while (!usuarioService.isValidPhone(telefone)) {
+                    String phone = scanner.nextLine();
+                    while (!userService.isValidPhone(phone)) {
                         System.out.println("Invalid phone. It must contain 10 or 11 digits. Please try again.");
 
                         System.out.print("Enter your phone: ");
-                        telefone = scanner.nextLine();
+                        phone = scanner.nextLine();
                     }
 
                     System.out.print("Enter the type of account (current, savings, salary): ");
-                    String tipoConta = scanner.nextLine().toLowerCase();
-                    while(!contaService.isValidAccountType(tipoConta)) {
+                    String accountType = scanner.nextLine().toLowerCase();
+                    while(!accountService.isValidAccountType(accountType)) {
                         System.out.println("Invalid account. Please enter 'current', 'savings' or 'salary'.");
 
                         System.out.print("Enter the type of account (current, savings, salary): ");
-                        tipoConta = scanner.nextLine().toLowerCase();
+                        accountType = scanner.nextLine().toLowerCase();
                     }
 
                     System.out.print("Enter your password: ");
                     String senha = scanner.nextLine();
-                    while (!usuarioService.isValidPassword(senha)) {
+                    while (!userService.isValidPassword(senha)) {
                         System.out.println("Invalid password. It must contain exactly 4 digits. Please try again.");
 
                         System.out.print("Enter your password: ");
@@ -220,7 +229,6 @@ public class MainMenuController {
                     LocalDate dataNascimento = null;
                     boolean dataValida = false;
                     while (!dataValida) {
-                        System.out.print("Enter your date of birth (yyyy-MM-dd): ");
                         try {
                             dataNascimento = LocalDate.parse(scanner.nextLine());
                             dataValida = true;
@@ -230,8 +238,8 @@ public class MainMenuController {
                         }
                     }
 
-                    Usuario usuario = usuarioService.create(nome, telefone, cpf, dataNascimento, senha);
-                    String contaNumero = contaService.create(0.0f, tipoConta, usuario);
+                    User user = userService.create(name, phone, cpf, dataNascimento, senha);
+                    String contaNumero = accountService.create(0.0f, accountType, user);
                     System.out.println();
                     System.out.println("Account created successfully!");
                     System.out.println("Account Number: " + contaNumero);
